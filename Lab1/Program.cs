@@ -6,7 +6,7 @@ public static class Program
 {
     public static void Main(string[] arg)
     {
-        var functionRootFinder = new FunctionRootFinder
+        var functionExplorer = new FunctionExplorer
         {
             Function = x => 4 - Math.Exp(x) - 2 * Math.Pow(x, 2),
             LeftBorder = 0,
@@ -14,9 +14,9 @@ public static class Program
         };
         const double epsilon = 1e-2;
         
-        Statistic? dichotomyRoot = functionRootFinder.DichotomyMethod(epsilon);
-        Statistic? goldenRatioExtremum = functionRootFinder.GoldenRatio(epsilon, "min");
-        Statistic? fibonacciExtremum = functionRootFinder.FibonacciMethod(30);
+        Statistic? dichotomyRoot = functionExplorer.DichotomyMethod(epsilon);
+        Statistic? goldenRatioExtremum = functionExplorer.GoldenRatio(epsilon, "min");
+        Statistic? fibonacciExtremum = functionExplorer.FibonacciMethod(30);
 
         if (dichotomyRoot is null || goldenRatioExtremum is null || fibonacciExtremum is null)
         {

@@ -2,7 +2,7 @@
 
 namespace LabEntities;
 
-public class FunctionRootFinder
+public class FunctionExplorer
 {
     public Func<double, double>? Function { get; set; }
     public double LeftBorder { get; set; }
