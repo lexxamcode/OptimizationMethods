@@ -1,39 +1,26 @@
 ﻿using LabEntities;
 
-namespace Lab1;
-
-public static class Program
+var functionExplorer = new FunctionExplorer
 {
-    public static void Main(string[] arg)
-    {
-        var functionExplorer = new FunctionExplorer
-        {
-            Function = x => 4 - Math.Exp(x) - 2 * Math.Pow(x, 2),
-            LeftBorder = 0,
-            RightBorder = 10
-        };
-        const double epsilon = 1e-2;
-        
-        Statistic? dichotomyRoot = functionExplorer.DichotomyMethod(epsilon);
-        Statistic? goldenRatioExtremum = functionExplorer.GoldenRatio(epsilon, "min");
-        Statistic? fibonacciExtremum = functionExplorer.FibonacciMethod(30);
+    Function = x => 1 - Math.Exp(-1*Math.Pow((x-2),4)),
+    LeftBorder = -10,
+    RightBorder = 15
+};
+const double epsilon = 1e-4;
 
-        if (dichotomyRoot is null || goldenRatioExtremum is null || fibonacciExtremum is null)
-        {
-            Console.WriteLine("Function is not set or incorrect borders");
-            return;
-        }
-        
-        Console.WriteLine("Dichotomy Method");
-        Console.WriteLine($"The root of the function is ({dichotomyRoot.ValueX}, {dichotomyRoot.ValueY})");
-        Console.WriteLine($"In {dichotomyRoot.Iterations} function using");
-        
-        Console.WriteLine("Golden Ratio Extremum location");
-        Console.WriteLine($"The extremum of the function is ({goldenRatioExtremum.ValueX}, {goldenRatioExtremum.ValueY})");
-        Console.WriteLine($"In {goldenRatioExtremum.Iterations} function using");
-        
-        Console.WriteLine("Fibonacci method of finding the extremum");
-        Console.WriteLine($"The extremum of the function is ({fibonacciExtremum.ValueX}, {fibonacciExtremum.ValueY})");
-        Console.WriteLine($"In {fibonacciExtremum.Iterations} function using");
-    }
-}
+Console.WriteLine("Dichotomy Method\n");
+Statistic? dichotomyRoot = functionExplorer.DichotomyMethod(epsilon);
+Console.WriteLine($"The minimum of the function is ({dichotomyRoot!.ValueX}, {dichotomyRoot.ValueY})");
+Console.WriteLine($"In {dichotomyRoot.Iterations} function using");
+
+Console.WriteLine("\n\nGolden Ratio Extremum location\n");
+Statistic? goldenRatioExtremum = functionExplorer.GoldenRatio(epsilon);
+Console.WriteLine($"The minimum of the function is ({goldenRatioExtremum!.ValueX}, {goldenRatioExtremum.ValueY})");
+Console.WriteLine($"In {goldenRatioExtremum.Iterations} function using");
+
+Console.WriteLine("\n\nFibonacci method of finding the extremum\n");
+Statistic? fibonacciExtremum = functionExplorer.FibonacciMethod(20);
+Console.WriteLine($"The minimum of the function is ({fibonacciExtremum!.ValueX}, {fibonacciExtremum.ValueY})");
+Console.WriteLine($"In {fibonacciExtremum.Iterations} function using");
+
+System.Console.ReadKey();

@@ -1,6 +1,4 @@
-﻿using static System.Double;
-
-namespace LabEntities;
+﻿namespace LabEntities;
 
 public class FunctionExplorer
 {
@@ -10,33 +8,33 @@ public class FunctionExplorer
     
     public Statistic? DichotomyMethod(double epsilon)
     {
-        if ((LeftBorder * RightBorder > 0) || Function == null)
+        if (Function == null)
             return null;
 
         var methodStatistic = new Statistic();
-        
         var leftBorder = LeftBorder;
         var rightBorder = RightBorder;
-        var middle = NaN;
-        
-        while (Math.Abs(rightBorder - leftBorder) > epsilon)
+
+        do
         {
-            middle = (rightBorder + leftBorder) / 2;
-
-            if (Function(rightBorder) * Function(middle) < 0)
-                leftBorder = middle;
-            else
-                rightBorder = middle;
-
+            var middle = (leftBorder + rightBorder) / 2;
+            var firstFunction = Function(middle - epsilon / 100);
+            var secondFunction = Function(middle + epsilon / 100);
             methodStatistic.Iterations += 2;
-        }
 
-        methodStatistic.ValueX = middle;
+            if (firstFunction < secondFunction)
+                rightBorder = middle + epsilon / 100;
+            else
+                leftBorder = middle - epsilon / 100;
+
+        } while (Math.Abs(rightBorder - leftBorder) > 2*epsilon);
+        
+        methodStatistic.ValueX = (rightBorder + leftBorder) / 2;
         methodStatistic.ValueY = Function(methodStatistic.ValueX);
         return methodStatistic;
     }
 
-    public Statistic? GoldenRatio(double epsilon, string extr)
+    public Statistic? GoldenRatio(double epsilon)
     {
         if (Function == null)
             return null;
@@ -47,30 +45,33 @@ public class FunctionExplorer
         var leftBorder = LeftBorder;
         var rightBorder = RightBorder;
 
-        while (Math.Abs(rightBorder - leftBorder) > epsilon)
-        {
-            var x1 = rightBorder - (rightBorder - leftBorder) / phi;
-            var x2 = leftBorder + (rightBorder - leftBorder) / phi;
+        var x1 = rightBorder - (rightBorder - leftBorder) / phi;
+        var x2 = leftBorder + (rightBorder - leftBorder) / phi;
 
-            var y1 = Function(x1);
-            var y2 = Function(x2);
-            methodStatistic.Iterations += 2;
-            
-            if (extr == "min")
+        var y1 = Function(x1);
+        var y2 = Function(x2);
+        methodStatistic.Iterations += 2;
+        
+        while (Math.Abs(rightBorder - leftBorder) > 2 * epsilon)
+        {
+            if (y1 >= y2)
             {
-                if (y1 >= y2)
-                    leftBorder = x1;
-                else
-                    rightBorder = x2;
+                leftBorder = x1;
+                x1 = x2;
+                x2 = leftBorder + (rightBorder - leftBorder) / phi;
+                y1 = y2;
+                y2 = Function(x2);
             }
             else
             {
-                if (y1 <= y2)
-                    leftBorder = x1;
-                else
-                    rightBorder = x2; 
+                rightBorder = x2;
+                x2 = x1;
+                x1 = rightBorder - (rightBorder - leftBorder) / phi;
+                y2 = y1;
+                y1 = Function(x1);
             }
-            
+
+            methodStatistic.Iterations++;
         }
 
         methodStatistic.ValueX = (leftBorder + rightBorder) / 2;
@@ -78,7 +79,7 @@ public class FunctionExplorer
         return methodStatistic;
     }
 
-    private uint Fibonacci(uint n)
+    private static uint Fibonacci(uint n)
     {
         if (n < 2)
             return n;
@@ -122,7 +123,8 @@ public class FunctionExplorer
                 y2 = y1;
                 y1 = Function(x1);
             }
-
+            
+            Console.WriteLine($"left: {leftBorder}; right: {rightBorder}; x1: {x1}; x2: {x2};");
             methodStatistic.Iterations += 1;
         } while (iterations != 1);
 
